@@ -1,3 +1,4 @@
+//Tree 구현 : 포인터를 사용. 1. 개수를 정해놓고 변수를 만들어서, 2. 개수를 안정해놓고 malloc 사용해서
 #include <stdio.h>
 #include <stdlib.h>  // malloc
 
