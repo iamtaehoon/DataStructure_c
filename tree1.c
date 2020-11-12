@@ -57,6 +57,6 @@ int main() {
   p->left->left->right = NULL;
 
 
-  
+ 
   return 0;
 }
