@@ -1,6 +1,6 @@
 #광주 지하철 노선표를 다익스트라를 사용해서
 #지점 두곳을 입력하면 최단거리를 계싼해주는 알고리즘
-#중간저장. 최단거리는 구함. 이제 최단경로만 표시해주면 
+#중간저장. 최단거리는 구함. 이제 최단경로만 표시해주면
 
 import xlrd
 
@@ -23,6 +23,8 @@ for row in info_list[4:]:
 graph = [[] for i in range(cnt+1)]
 visited = [False]*(cnt+1)
 distance = [INF]*(cnt+1)
+parents = [0]*(cnt+1)
+trace = []
 
 for row in info_list[4:]:
     for x in range(row[7]):
@@ -57,20 +59,39 @@ def get_smallest_node():
             index = i
     return index
 
-def dijkstra(start):
+def dijkstra(start,end):
     distance[start] = 0
     visited[start] = True
     for j in graph[start]:
         distance[j[0]] = j[1]#j[0]은 노드 j[1]은 거리 distance[노드번호] = 거리 입력 #무한대를 입력값으로 바꿔줌
+        parents[j[0]] = start
     for i in range(cnt-1):#시작노드 빼고 총 n-1번 돌거다.
         now = get_smallest_node()
         visited[now] = True
         for j in graph[now]:
             cost = j[1] + distance[now]
             if cost < distance[j[0]]:
+                parents[j[0]] = now
                 distance[j[0]] = cost
-dijkstra(start)
-print(distance[end])
+
+    current = end
+    while current != start:
+        trace.append(current)
+        current = parents[current]
+    trace.append(start)
+    trace.reverse()
+
+
+dijkstra(start,end)
+
+print("{0}({1})에서 {2}({3})까지 가는 최단거리는 ".format(info_list[start+3][3],info_list[start+3][4],info_list[end+3][3],info_list[end+3][4]),end='')
+print(distance[end],end='')
+#print(parents)
+print("이고,\n최단경로는 ")
+#print(trace)
+for i in trace:
+    print("{0}({1})->".format(info_list[i + 3][3], info_list[i + 3][4]),end ='')
+print("하차한다.")
 #for i in range(1,cnt+1):
 #    if distance[i] == INF:
 #        print('INFINITY')
