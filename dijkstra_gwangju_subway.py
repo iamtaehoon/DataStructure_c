@@ -1,6 +1,8 @@
 #광주 지하철 노선표를 다익스트라를 사용해서
 #지점 두곳을 입력하면 최단거리를 계싼해주는 알고리즘
-#중간저장. 엑셀파일을 가지고 그래프, 그리고 연결 노드와 거리까지 데이터로 만들어냄
+#중간저장. 최단거리는 구함. 이제 최단경로만 표시해주면 
+
+import xlrd
 
 INF = int(1e9)
 cnt = 0 #64개 있음. 이 정류장이 몇 개 있는지 기록하려고. 노드의 개수
@@ -31,3 +33,46 @@ for row in info_list[4:]:
 # 그래프 안에 노드 연결된 애들 잘 들어갔나 확인용
 for i in range(cnt+1):
     print(graph[i])
+
+departure_name, departure_line = input().split()
+arrival_name, arrival_line = input().split()
+
+for row in info_list[4:]:
+    if (row[3] == departure_name) and (row[4] == departure_line):
+        start = row[1]
+        #여기가 출발점이다라는 뜻 나머지는 다 continue~ 노드번호를 따오면 될듯.
+        break
+for row in info_list[4:]:
+    if (row[3] == arrival_name) and (row[4] == arrival_line):
+        end = row[1] #도착 노드번호
+        break
+
+
+def get_smallest_node():
+    min_value = INF
+    index = 0
+    for i in range(1,cnt+1):
+        if distance[i] < min_value and not visited[i]:
+            min_value = distance[i]
+            index = i
+    return index
+
+def dijkstra(start):
+    distance[start] = 0
+    visited[start] = True
+    for j in graph[start]:
+        distance[j[0]] = j[1]#j[0]은 노드 j[1]은 거리 distance[노드번호] = 거리 입력 #무한대를 입력값으로 바꿔줌
+    for i in range(cnt-1):#시작노드 빼고 총 n-1번 돌거다.
+        now = get_smallest_node()
+        visited[now] = True
+        for j in graph[now]:
+            cost = j[1] + distance[now]
+            if cost < distance[j[0]]:
+                distance[j[0]] = cost
+dijkstra(start)
+print(distance[end])
+#for i in range(1,cnt+1):
+#    if distance[i] == INF:
+#        print('INFINITY')
+#    else:
+#        print(distance[i])
